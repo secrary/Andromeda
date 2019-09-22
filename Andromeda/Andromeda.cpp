@@ -19,17 +19,26 @@ void print_todo()
 void help_commands()
 {
 	printf("Commands:\n");
-	printf("ep / entry_points - print list of entry points [LIMITED]\n");
-	printf("epe / entry_points_extended - print all possible entry points\n");
-	printf("class / class_info class_path - print list of methods from a class\n");
-	printf("dis / disassemble method_path - disassemble a method\n");
-	printf("manifest - print content of AndroidManifest.xml file\n");
-	printf("is_debuggable - Checks android::debuggable field of AndroidManifest.xml file\n");
-	printf("certificate - print important details from a certificate\n");
-	printf("creation_date - print creation date based on a certificate\n");
-
-	printf("clr: Clear screen\n");
-	printf("exit/quit\n");
+	color::color_printf(color::FG_LIGHT_GREEN, "entry_points [ep]");
+	printf(" - print list of entry points [LIMITED]\n");
+	color::color_printf(color::FG_LIGHT_GREEN, "entry_points_extended [epe]");
+	printf(" - print all possible entry points\n");
+	color::color_printf(color::FG_LIGHT_GREEN, "class_info [class] class_path");
+	printf(" - print list of methods from a class\n");
+	color::color_printf(color::FG_LIGHT_GREEN, "disassemble [dis] method_path");
+	printf(" - disassemble a method\n");
+	color::color_printf(color::FG_LIGHT_GREEN, "manifest");
+	printf(" - print content of AndroidManifest.xml file\n");
+	color::color_printf(color::FG_LIGHT_GREEN, "is_debuggable");
+	printf(" - Checks android::debuggable field of AndroidManifest.xml file\n");
+	color::color_printf(color::FG_LIGHT_GREEN, "certificate");
+	printf(" - print important details from a certificate\n");
+	color::color_printf(color::FG_LIGHT_GREEN, "creation_date");
+	printf(" - print creation date based on a certificate\n");
+	
+	color::color_printf(color::FG_LIGHT_GREEN, "clr");
+	printf(": Clear screen\n");
+	color::color_printf(color::FG_LIGHT_GREEN, "\nexit/quit\n");
 	printf("\n");
 }
 
