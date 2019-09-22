@@ -1,5 +1,3 @@
-# Andromeda
-
 ![andromeda](https://user-images.githubusercontent.com/16405698/65393541-89490480-dd8a-11e9-92a3-727799c30b02.png)
 
 Andromeda makes initial reverse engineering work of android applications bit faster and easier.
