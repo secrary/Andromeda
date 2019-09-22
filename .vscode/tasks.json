@@ -8,6 +8,7 @@
             "args": [
                 // debug symbols
                 // "-g",
+                "-O3",
                 // libs headers
                 "-I",
                 "${fileDirname}/../libs",
