@@ -16,6 +16,7 @@ void print_todo()
 {
 	color::color_printf(color::FG_LIGHT_RED, "TODO\n");
 }
+
 void help_commands()
 {
 	printf("Commands:\n");
@@ -35,14 +36,14 @@ void help_commands()
 	printf(" - print important details from a certificate\n");
 	color::color_printf(color::FG_LIGHT_GREEN, "creation_date");
 	printf(" - print creation date based on a certificate\n");
-	
+
 	color::color_printf(color::FG_LIGHT_GREEN, "clr");
 	printf(": Clear screen\n");
 	color::color_printf(color::FG_LIGHT_GREEN, "\nexit/quit\n");
 	printf("\n");
 }
 
-int main(const int argc, char *argv[])
+int main(const int argc, char* argv[])
 {
 	utils::clrscr();
 	color_printf(color::FG_LIGHT_RED, "A n d r o m e d a ");
@@ -53,7 +54,7 @@ int main(const int argc, char *argv[])
 		return -1;
 	}
 	// disable buffering
-	setbuf(stdout, NULL);
+	setbuf(stdout, nullptr);
 
 	const auto full_path = fs::absolute(argv[1]);
 	if (!exists(full_path))
@@ -64,7 +65,8 @@ int main(const int argc, char *argv[])
 	//printf("File: %ls\n", full_path.wstring().c_str());
 
 	// Setup completion words every time when a user types
-	linenoise::SetCompletionCallback([](const char *editBuffer, std::vector<std::string> &completions) {
+	linenoise::SetCompletionCallback([](const char* editBuffer, std::vector<std::string>& completions)
+	{
 		if (editBuffer[0] == 'h')
 		{
 			completions.push_back("hello");
@@ -73,14 +75,15 @@ int main(const int argc, char *argv[])
 	});
 
 	// Setup completion words every time when a user types
-	linenoise::SetCompletionCallback([](const char *editBuffer, std::vector<std::string> &completions) {
+	linenoise::SetCompletionCallback([](const char* editBuffer, std::vector<std::string>& completions)
+	{
 		if (editBuffer[0] == 'e')
 		{
 			if (strlen(editBuffer) > 1 && editBuffer[1] == 'x')
 			{
 				completions.emplace_back("exit");
 			}
-		
+
 			completions.emplace_back("ep");
 			completions.emplace_back("entry_points");
 			completions.emplace_back("epe");
@@ -198,12 +201,12 @@ int main(const int argc, char *argv[])
 			print_todo();
 		}
 
-		// clear screen
+			// clear screen
 		else if (line == "clr")
 		{
 			utils::clrscr();
 		}
-		// invalid command
+			// invalid command
 		else
 		{
 			color::color_printf(color::FG_RED, "Invalid command: %s\n", line.c_str());

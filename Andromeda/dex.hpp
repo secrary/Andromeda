@@ -22,7 +22,7 @@ namespace andromeda
 		std::shared_ptr<char> dex_content_ = nullptr;
 		std::shared_ptr<dex::Reader> dex_reader_ = nullptr;
 		std::vector<std::string> dex_classes_;
-		std::string dex_name;
+		std::string dex_name_;
 
 		static std::string name_to_descriptor(const std::string& name)
 		{
@@ -49,14 +49,14 @@ namespace andromeda
 		}
 
 	public:
-
-		
 		explicit parsed_dex(const fs::path& dex_path)
 		{
 			size_t file_size{};
-			dex_name = dex_path.filename().string();
+			dex_name_ = dex_path.filename().string();
 			dex_content_ = utils::read_file(dex_path.string(), file_size);
-			dex_reader_ = std::shared_ptr<dex::Reader>{new dex::Reader((dex::u1 *)dex_content_.get(), file_size)};
+			dex_reader_ = std::shared_ptr<dex::Reader>{
+				new dex::Reader((dex::u1*)(dex_content_.get()), file_size)
+			};
 
 			// ctor
 		}
@@ -64,8 +64,9 @@ namespace andromeda
 		parsed_dex(const parsed_dex&) = default;
 		parsed_dex& operator=(const parsed_dex&) = default;
 
-		std::string get_dex_name() const {
-			return dex_name;
+		std::string get_dex_name() const
+		{
+			return dex_name_;
 		}
 
 		std::vector<std::string> get_classes()
@@ -129,7 +130,7 @@ namespace andromeda
 				// printf("Can not find a class: %s\n\t%s\n", class_descriptor.c_str(), dex_name.c_str());
 				return found;
 			}
-			
+
 			dex_reader_->CreateClassIr(class_index);
 			auto dex_ir = dex_reader_->GetIr();
 
