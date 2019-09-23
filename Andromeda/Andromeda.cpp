@@ -33,9 +33,9 @@ void help_commands()
 	color::color_printf(color::FG_LIGHT_GREEN, "is_debuggable");
 	printf(" - Checks android::debuggable field of AndroidManifest.xml file\n");
 	color::color_printf(color::FG_LIGHT_GREEN, "certificate");
-	printf(" - print important details from a certificate\n");
+	printf(" - print content of root certificate\n");
 	color::color_printf(color::FG_LIGHT_GREEN, "creation_date");
-	printf(" - print creation date based on a certificate\n");
+	printf(" - print creation date of the application based on a certificate\n");
 
 	color::color_printf(color::FG_LIGHT_GREEN, "clr");
 	printf(": Clear screen\n");
@@ -111,6 +111,10 @@ int main(const int argc, char* argv[])
 		{
 			completions.emplace_back("manifest");
 		}
+		else if (editBuffer[0] == 'r')
+		{
+			completions.emplace_back("revoke_date");
+		}
 		else if (editBuffer[0] == 'i')
 		{
 			completions.emplace_back("is_debuggable");
@@ -151,7 +155,7 @@ int main(const int argc, char* argv[])
 
 		else if (line == "manifest")
 		{
-			apk.app_manifest->dump_manifest_file();
+			apk.dump_manifest_file();
 		}
 		else if (line == "is_debuggable")
 		{
@@ -194,11 +198,15 @@ int main(const int argc, char* argv[])
 		}
 		else if (line == "certificate")
 		{
-			print_todo();
+			apk.dump_certificate();
 		}
 		else if (line == "creation_date")
 		{
-			print_todo();
+			apk.dump_creation_date();
+		}
+		else if (line == "revoke_date")
+		{
+			apk.dump_revoke_date();
 		}
 
 			// clear screen

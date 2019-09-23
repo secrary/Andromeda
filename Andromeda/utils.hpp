@@ -124,7 +124,8 @@ namespace utils
 			const auto under_dir = file_name.find('/') != std::string::npos;
 			if (under_dir)
 			{
-				if (!full_unpack)
+				const auto is_cert_dir = file_name.find("META-INF") != std::string::npos;
+				if (!full_unpack && !is_cert_dir)
 				{
 					continue;
 				}

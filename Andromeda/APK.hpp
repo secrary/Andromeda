@@ -1,10 +1,12 @@
 #pragma once
 
+#include "utils.hpp"
+
 #include "color/color.hpp"
 #include "dex.hpp"
 #include "manifest.hpp"
+#include "cert.hpp"
 
-#include "utils.hpp"
 
 namespace andromeda
 {
@@ -13,6 +15,7 @@ namespace andromeda
 	public:
 		bool is_valid = false;
 		std::shared_ptr<manifest> app_manifest;
+		std::shared_ptr<andromeda::certificate> cert;
 		std::vector<parsed_dex> parsed_dexes{};
 		std::string unzip_path{};
 
@@ -39,8 +42,13 @@ namespace andromeda
 				return;
 			}
 
+			// certificate
+			const auto certificate_dir = unzip_path + '/' + "META-INF";
+			cert = std::shared_ptr<certificate>{new certificate(certificate_dir)};
+			
+
 			// manifest
-			const auto manifest_path = unzip_path + "/" + "AndroidManifest.xml";
+			const auto manifest_path = unzip_path + '/' + "AndroidManifest.xml";
 			if (fs::exists(manifest_path))
 			{
 				app_manifest = std::shared_ptr<manifest>{new manifest(manifest_path)};
@@ -131,6 +139,31 @@ namespace andromeda
 			{
 				color::color_printf(color::FG_LIGHT_RED, "No\n");
 			}
+		}
+
+		void dump_manifest_file() const
+		{
+			color::color_printf(color::FG_LIGHT_GREEN, "----------- BEGIN -----------\n");
+			printf("%s\n", app_manifest->manifest_content.c_str());
+			color::color_printf(color::FG_LIGHT_GREEN, "----------- EOF -----------\n");
+		}
+
+		// certificate
+		void dump_certificate() const
+		{
+			color::color_printf(color::FG_LIGHT_GREEN, "----------- BEGIN -----------\n");
+			printf("%s\n", cert->get_certificate().get());
+			color::color_printf(color::FG_LIGHT_GREEN, "----------- EOF -----------\n");
+		}
+
+		void dump_creation_date() const 
+		{
+			printf("%s\n", cert->get_creation_date().get());
+		}
+
+		void dump_revoke_date() const 
+		{
+			printf("%s\n", cert->get_revoke_date().get());
 		}
 
 		// class apk

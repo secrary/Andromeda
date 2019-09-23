@@ -18,5 +18,4 @@ I've very limited experience with Android, so if you have time please contribute
 
 * Implement new features
     - get list of `lib` files and dump them
-    - Parse information from a certificate file
 * Document the tool

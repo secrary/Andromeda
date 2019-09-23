@@ -244,13 +244,6 @@ namespace andromeda
 			// dump_entry_points()
 		}
 
-		void dump_manifest_file() const
-		{
-			color::color_printf(color::FG_LIGHT_GREEN, "----------- BEGIN -----------\n");
-			printf("%s\n", manifest_content.c_str());
-			color::color_printf(color::FG_LIGHT_GREEN, "----------- EOF -----------\n");
-		}
-
 		bool is_debuggable() const
 		{
 			return debuggable;
