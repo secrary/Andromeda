@@ -26,6 +26,5 @@ I've very limited experience with Android, so if you have time please contribute
 
 ## TODO
 * Implement new features
-    - Get list of `lib` files and dump them
     - Differentiate external and internal libraries
 * Document the tool
