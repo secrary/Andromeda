@@ -383,7 +383,7 @@ AxmlNext(void* axml)
 	uint32_t chunkType;
 
 	/* when init */
-	if (event == -1)
+	if (event == AE_UNINITIALIZED)
 	{
 		event = AE_STARTDOC;
 		return event;
@@ -711,8 +711,8 @@ char*
 AxmlGetAttrValue(void* axml, uint32_t i)
 {
 	static float RadixTable[] = { 0.00390625f, 3.051758E-005f, 1.192093E-007f, 4.656613E-010f };
-	static char* DimemsionTable[] = { "px", "dip", "sp", "pt", "in", "mm", "", "" };
-	static char* FractionTable[] = { "%", "%p", "", "", "", "", "", "" };
+	static const char* DimemsionTable[] = { "px", "dip", "sp", "pt", "in", "mm", "", "" };
+	static const char* FractionTable[] = { "%", "%p", "", "", "", "", "", "" };
 
 	Parser_t* ap;
 	uint32_t type;
