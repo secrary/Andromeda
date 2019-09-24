@@ -32,6 +32,9 @@
                 "${fileDirname}/../bin/${fileBasenameNoExtension}",
                 "-lstdc++fs",
                 "-lcrypto",
+
+                // Target C++ 17
+                "-std=c++1z"
             ],
             "options": {
                 "cwd": "/usr/bin"

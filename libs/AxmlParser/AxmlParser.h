@@ -8,7 +8,8 @@
 #include <stdint.h>
 
 typedef enum {
-	AE_STARTDOC = 0,
+	AE_UNINITIALIZED = -1,
+	AE_STARTDOC,
 	AE_ENDDOC,
 	AE_STARTTAG,
 	AE_ENDTAG,
