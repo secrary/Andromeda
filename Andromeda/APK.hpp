@@ -2,7 +2,6 @@
 
 #include "utils.hpp"
 
-#include "color/color.hpp"
 #include "dex.hpp"
 #include "manifest.hpp"
 #include "cert.hpp"
@@ -263,6 +262,44 @@ namespace andromeda
 		{
 			printf("%s\n", cert->get_revoke_date().get());
 		}
+
+		// strings
+		void dump_strings()
+		{
+			for (auto parsed_dex : parsed_dexes)
+			{
+				const auto dex_strings = parsed_dex.get_strings();
+				if (!dex_strings.empty())
+				{
+					color::color_printf(color::FG_DARK_GRAY, "DEX file: %s\n", parsed_dex.get_dex_name().c_str());
+					for (const auto& str : dex_strings)
+					{
+						color::color_printf(color::FG_GREEN, "\t%s\n", str.c_str());
+					}
+				}
+			}
+		}
+
+		void search_string(std::string& target_string)
+		{
+			for (auto parsed_dex : parsed_dexes)
+			{
+				auto dex_strings = parsed_dex.get_strings();
+				if (!dex_strings.empty())
+				{
+					for (auto& str : dex_strings)
+					{
+						if (!str.empty() &&
+							utils::find_case_insensitive(str, target_string) != std::string::npos )
+						{
+							color::color_printf(color::FG_DARK_GRAY, "%s: ", parsed_dex.get_dex_name().c_str());
+							color::color_printf(color::FG_GREEN, "%s\n", str.c_str());
+						}
+					}
+				}
+			}
+		}
+
 
 		// class apk
 	};

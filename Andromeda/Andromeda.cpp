@@ -1,6 +1,5 @@
 #include <cstdio>
 
-#include "color/color.hpp"
 #include "utils.hpp"
 
 #include "APK.hpp"
@@ -46,6 +45,13 @@ void help_commands()
 	printf(" - write all lib files to disk\n");
 	color::color_printf(color::FG_LIGHT_GREEN, "dump_lib lib_path");
 	printf(" - write 'lib_path' file to disk\n");
+	
+	// strings
+	color::color_printf(color::FG_LIGHT_GREEN, "strings [strs]");
+	printf(" - print the strings of APK (thanks to Strings Constant Pool)\n");
+
+	color::color_printf(color::FG_LIGHT_GREEN, "string [str] search_string");
+	printf(" - find \"search_string\" in the strings of APK\n");
 
 	color::color_printf(color::FG_LIGHT_GREEN, "clr");
 	printf(": Clear screen\n");
@@ -72,17 +78,6 @@ int main(const int argc, char* argv[])
 		printf("Invalid file path: %ls\n", full_path.wstring().c_str());
 		return -1;
 	}
-	//printf("File: %ls\n", full_path.wstring().c_str());
-
-	// Setup completion words every time when a user types
-	linenoise::SetCompletionCallback([](const char* editBuffer, std::vector<std::string>& completions)
-	{
-		if (editBuffer[0] == 'h')
-		{
-			completions.push_back("hello");
-			completions.push_back("hello there");
-		}
-	});
 
 	// Setup completion words every time when a user types
 	linenoise::SetCompletionCallback([](const char* editBuffer, std::vector<std::string>& completions)
@@ -128,6 +123,14 @@ int main(const int argc, char* argv[])
 		else if (editBuffer[0] == 'r')
 		{
 			completions.emplace_back("revoke_date");
+		}
+		else if (editBuffer[0] == 's')
+		{
+			completions.emplace_back("strs");
+			completions.emplace_back("strings");
+
+			completions.emplace_back("str ");
+			completions.emplace_back("string ");
 		}
 		else if (editBuffer[0] == 'i')
 		{
@@ -255,6 +258,20 @@ int main(const int argc, char* argv[])
 			if (!lib_path.empty())
 			{
 				apk.get_libs(full_path, true, lib_path);
+			}
+		}
+
+		// strings
+		else if (line == "strings" || line == "strs")
+		{
+			apk.dump_strings();
+		}
+		else if (utils::starts_with(line, "str ") || utils::starts_with(line, "string "))
+		{
+			auto [_, target_string] = utils::split(line, ' ');
+			if (!target_string.empty())
+			{
+				apk.search_string(target_string);
 			}
 		}
 

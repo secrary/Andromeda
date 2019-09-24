@@ -1,8 +1,6 @@
 #pragma once
 
-#include <vector>
-#include <string>
-#include <memory>
+#include "utils.hpp"
 
 // slicer
 #include "slicer/dex_format.h"
@@ -11,7 +9,6 @@
 #include "slicer/code_ir.h"
 #include "slicer/dex_ir.h"
 
-#include "utils.hpp"
 
 #include "disassambler/dissassembler.h"
 
@@ -22,6 +19,7 @@ namespace andromeda
 		std::shared_ptr<char> dex_content_ = nullptr;
 		std::shared_ptr<dex::Reader> dex_reader_ = nullptr;
 		std::vector<std::string> dex_classes_;
+		std::vector<std::string> strings_pool; // thanks to Strings Constant Pool
 		std::string dex_name_;
 
 		static std::string name_to_descriptor(const std::string& name)
@@ -49,6 +47,7 @@ namespace andromeda
 		}
 
 	public:
+
 		explicit parsed_dex(const fs::path& dex_path)
 		{
 			size_t file_size{};
@@ -67,6 +66,25 @@ namespace andromeda
 		std::string get_dex_name() const
 		{
 			return dex_name_;
+		}
+
+		std::vector<std::string> get_strings()
+		{
+			if (strings_pool.empty())
+			{
+				dex_reader_->CreateFullIr();
+				auto ir = dex_reader_->GetIr();
+				for (const auto& s : ir->strings)
+				{
+					const auto current_string = std::string { s->c_str() };
+					if (!current_string.empty())
+					{
+						strings_pool.emplace_back(current_string);
+					}
+				}
+			}
+
+			return strings_pool;
 		}
 
 		std::vector<std::string> get_classes()

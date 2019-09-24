@@ -3,11 +3,14 @@
 #include <memory>
 #include <vector>
 #include <string>
+#include <algorithm>
 #include <experimental/filesystem>
 namespace fs = std::experimental::filesystem;
 
 #include "miniz/miniz.h"
 #include "AxmlParser/AxmlParser.h"
+
+#include "color/color.hpp"
 
 namespace utils
 {
@@ -153,6 +156,15 @@ namespace utils
 
 		mz_zip_reader_end(&zip_archive);
 		return dest_dir;
+	}
+
+	template <typename T>
+	inline size_t find_case_insensitive(T data, T to_search, const size_t pos = 0)
+	{
+		std::transform(data.begin(), data.end(), data.begin(), tolower);
+		std::transform(to_search.begin(), to_search.end(), to_search.begin(), tolower);
+
+		return data.find(to_search, pos);
 	}
 
 	inline void clrscr()
