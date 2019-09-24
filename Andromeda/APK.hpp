@@ -84,6 +84,87 @@ namespace andromeda
 		apk(const apk&) = default;
 		apk& operator=(const apk&) = default;
 
+		std::vector<std::string> get_libs(const fs::path& file_path, const bool extract = false, const std::string& target_lib_path = "")
+		{
+			std::vector<std::string> libs{};
+
+			mz_zip_archive zip_archive;
+			memset(&zip_archive, 0, sizeof(zip_archive));
+
+			const auto status = mz_zip_reader_init_file(&zip_archive, file_path.string().c_str(), 0);
+			if (!status)
+				return libs;
+
+			const auto file_count = mz_zip_reader_get_num_files(&zip_archive);
+			if (file_count == 0)
+			{
+				mz_zip_reader_end(&zip_archive);
+				return libs;
+			}
+			// printf("number_of_files: %zu\n", file_count);
+
+			const auto dest_dir = fs::current_path().string() + '/' + "libs";
+
+			for (auto i = 0; i < file_count; i++)
+			{
+				mz_zip_archive_file_stat file_stat;
+				if (!mz_zip_reader_file_stat(&zip_archive, i, &file_stat))
+				{
+					printf("failed to get file stat. index: %d\n", i);
+					continue;
+				}
+				if (mz_zip_reader_is_file_a_directory(&zip_archive, i))
+				{
+					continue;
+				}
+
+				const std::string file_name{file_stat.m_filename};
+				const auto dest_file = dest_dir + '/' + file_name;
+
+				if (utils::starts_with(file_name, "lib/"))
+				{
+					const auto [_, lib_path] = utils::split(file_name, '/');
+					if (!extract)
+					{
+						if (!lib_path.empty())
+						{
+							libs.emplace_back(lib_path);
+						}
+						continue;
+					}
+					else if (extract && !target_lib_path.empty())
+					{
+						if (target_lib_path != lib_path)
+						{
+							continue;
+						}
+					}
+
+					const fs::path under_dir_path{dest_file};
+					const std::string under_dir_full = under_dir_path.parent_path();
+					if (!fs::exists(under_dir_full))
+					{
+						fs::create_directories(under_dir_full);
+					}
+
+					const auto is_okay = mz_zip_reader_extract_to_file(&zip_archive, i, dest_file.c_str(), 0);
+					if (!is_okay)
+					{
+						color::color_printf(color::FG_LIGHT_RED, "[APK.hpp] Failed to unpack file: %s\n", file_name.c_str());
+					}
+					else
+					{
+						color::color_printf(color::FG_GREEN, "unpacked lib: %s\n", dest_file.c_str());
+					}
+				}
+
+			}
+
+			mz_zip_reader_end(&zip_archive);
+
+			return libs;
+		}
+
 		void dump_classes()
 		{
 			for (auto& dex : parsed_dexes)

@@ -39,6 +39,14 @@ void help_commands()
 	color::color_printf(color::FG_LIGHT_GREEN, "creation_date");
 	printf(" - print creation date of the application based on a certificate\n");
 
+	// libs
+	color::color_printf(color::FG_LIGHT_GREEN, "libs");
+	printf(" - print list of native library files\n");
+	color::color_printf(color::FG_LIGHT_GREEN, "dump_libs");
+	printf(" - write all lib files to disk\n");
+	color::color_printf(color::FG_LIGHT_GREEN, "dump_lib lib_path");
+	printf(" - write 'lib_path' file to disk\n");
+
 	color::color_printf(color::FG_LIGHT_GREEN, "clr");
 	printf(": Clear screen\n");
 	color::color_printf(color::FG_LIGHT_GREEN, "\nexit/quit\n");
@@ -95,6 +103,9 @@ int main(const int argc, char* argv[])
 		{
 			completions.emplace_back("dis ");
 			completions.emplace_back("disassemble ");
+
+			completions.emplace_back("dump_lib ");
+			completions.emplace_back("dump_libs");
 		}
 		else if (editBuffer[0] == 'c')
 		{
@@ -121,6 +132,10 @@ int main(const int argc, char* argv[])
 		else if (editBuffer[0] == 'i')
 		{
 			completions.emplace_back("is_debuggable");
+		}
+		else if (editBuffer[0] == 'l')
+		{
+			completions.emplace_back("libs");
 		}
 
 		else if (editBuffer[0] == 'h')
@@ -217,12 +232,38 @@ int main(const int argc, char* argv[])
 			apk.dump_revoke_date();
 		}
 
-			// clear screen
+		// libs
+		else if (line == "libs")
+		{
+			const auto libs = apk.get_libs(full_path);
+			if (!libs.empty())
+			{
+				color::color_printf(color::FG_DARK_GRAY, "Libs:\n");
+				for (const auto& lib : libs)
+				{
+					color::color_printf(color::FG_GREEN, "\t%s\n", lib.c_str());
+				}
+			}
+		}
+		else if (line == "dump_libs")
+		{
+			apk.get_libs(full_path, true);
+		}
+		else if (utils::starts_with(line, "dump_lib "))
+		{
+			auto [_, lib_path] = utils::split(line, ' ');
+			if (!lib_path.empty())
+			{
+				apk.get_libs(full_path, true, lib_path);
+			}
+		}
+
+		// clear screen
 		else if (line == "clr")
 		{
 			utils::clrscr();
 		}
-			// invalid command
+		// invalid command
 		else
 		{
 			color::color_printf(color::FG_RED, "Invalid command: %s\n", line.c_str());

@@ -87,7 +87,7 @@ namespace utils
 		                  });
 	}
 
-	inline std::string unzip_file(const fs::path& file_path, bool full_unpack = true)
+	inline std::string unzip_file(const fs::path& file_path, const bool full_unpack = true)
 	{
 		mz_zip_archive zip_archive;
 		memset(&zip_archive, 0, sizeof(zip_archive));
@@ -95,7 +95,7 @@ namespace utils
 		const auto status = mz_zip_reader_init_file(&zip_archive, file_path.string().c_str(), 0);
 		if (!status)
 			return {};
-		const auto file_count = int(mz_zip_reader_get_num_files(&zip_archive));
+		const auto file_count = mz_zip_reader_get_num_files(&zip_archive);
 		if (file_count == 0)
 		{
 			mz_zip_reader_end(&zip_archive);
@@ -120,7 +120,11 @@ namespace utils
 			}
 			const std::string file_name{file_stat.m_filename};
 			const auto dest_file = dest_dir + '/' + file_name;
-			// const auto is_dir = mz_zip_reader_is_file_a_directory(&zip_archive, i); // always returns "false"
+			if (mz_zip_reader_is_file_a_directory(&zip_archive, i))
+			{
+				continue;
+			}
+
 			const auto under_dir = file_name.find('/') != std::string::npos;
 			if (under_dir)
 			{
@@ -141,7 +145,7 @@ namespace utils
 			const auto is_okay = mz_zip_reader_extract_to_file(&zip_archive, i, dest_file.c_str(), 0);
 			if (!is_okay)
 			{
-				color::color_printf(color::FG_LIGHT_RED, "Failed to unpack file: %s\n", file_name.c_str());
+				color::color_printf(color::FG_LIGHT_RED, "[utils.hpp] Failed to unpack file: %s\n", file_name.c_str());
 			}
 
 			// printf("%s\n", file_stat.m_filename);
