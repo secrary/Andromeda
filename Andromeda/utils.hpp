@@ -139,6 +139,10 @@ namespace utils
 			}
 
 			const auto is_okay = mz_zip_reader_extract_to_file(&zip_archive, i, dest_file.c_str(), 0);
+			if (!is_okay)
+			{
+				color::color_printf(color::FG_LIGHT_RED, "Failed to unpack file: %s\n", file_name.c_str());
+			}
 
 			// printf("%s\n", file_stat.m_filename);
 		}

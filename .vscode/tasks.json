@@ -9,15 +9,13 @@
                 // debug symbols
                 // "-g",
                 "-O3",
+                "-Wall"
                 // libs headers
                 "-I",
                 "${fileDirname}/../libs",
                 "-I",
                 "${fileDirname}/../slicer/export",
-                // libs
-                "-L",
-                "/usr/lib",
-                "-lz",
+
                 // sources
                 "${fileDirname}/Andromeda.cpp",
                 // lib sources
@@ -30,6 +28,10 @@
                 // output
                 "-o",
                 "${fileDirname}/../bin/${fileBasenameNoExtension}",
+                // libs
+                "-L",
+                "/usr/lib",
+                "-lz",
                 "-lstdc++fs",
                 "-lcrypto",
 

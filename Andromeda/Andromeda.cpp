@@ -24,6 +24,8 @@ void help_commands()
 	printf(" - print list of entry points [LIMITED]\n");
 	color::color_printf(color::FG_LIGHT_GREEN, "entry_points_extended [epe]");
 	printf(" - print all possible entry points\n");
+	color::color_printf(color::FG_LIGHT_GREEN, "classes");
+	printf(" - print all classes from APK file\n");
 	color::color_printf(color::FG_LIGHT_GREEN, "class_info [class] class_path");
 	printf(" - print list of methods from a class\n");
 	color::color_printf(color::FG_LIGHT_GREEN, "disassemble [dis] method_path");
@@ -98,6 +100,7 @@ int main(const int argc, char* argv[])
 		{
 			completions.emplace_back("class ");
 			completions.emplace_back("class_info ");
+			completions.emplace_back("classes");
 
 			completions.emplace_back("certificate");
 			completions.emplace_back("creation_date");
@@ -182,6 +185,11 @@ int main(const int argc, char* argv[])
 			{
 				color::color_printf(color::FG_LIGHT_RED, "Invalid class path\n");
 			}
+		}
+
+		else if (line == "classes")
+		{
+			apk.dump_classes();
 		}
 
 		else if (utils::starts_with(line, "dis ") || utils::starts_with(line, "disassemble "))
