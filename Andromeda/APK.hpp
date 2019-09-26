@@ -181,6 +181,62 @@ namespace andromeda
 
 		}
 
+		void find_dump_class(const std::string& class_part)
+		{
+			for (auto& dex : parsed_dexes)
+			{
+				const auto dex_classes = dex.get_classes();
+				if (!dex_classes.empty())
+				{
+					for (const auto& i_class : dex_classes)
+					{
+						if (utils::find_case_insensitive(i_class, class_part) != std::string::npos)
+						{
+							color::color_printf(color::FG_DARK_GRAY, "DEX file: %s\n", dex.get_dex_name().c_str());
+							color::color_printf(color::FG_GREEN, "\t%s\n", i_class.c_str());
+						}
+					}
+				}
+			}
+		}
+
+		void dump_methods()
+		{
+			for (auto& parsed_dex : parsed_dexes)
+			{
+				const auto dex_methods = parsed_dex.get_methods();
+				if (!dex_methods.empty())
+				{
+					color::color_printf(color::FG_DARK_GRAY, "DEX file: %s\n", parsed_dex.get_dex_name().c_str());
+					for (const auto& [class_path, method_name] : dex_methods)
+					{
+						color::color_printf(color::FG_DARK_GRAY, "%s.", class_path.c_str());
+						color::color_printf(color::FG_GREEN, "%s\n", method_name.c_str());
+					}
+				}
+			}
+		}
+
+		void fin_dump_method(const std::string& target_method_name)
+		{
+			for (auto& parsed_dex : parsed_dexes)
+			{
+				const auto dex_methods = parsed_dex.get_methods();
+				if (!dex_methods.empty())
+				{
+					for (const auto& [class_path, method_name] : dex_methods)
+					{
+						if (utils::find_case_insensitive(method_name, target_method_name) != std::string::npos)
+						{
+							color::color_printf(color::FG_DARK_GRAY, "DEX file: %s\n", parsed_dex.get_dex_name().c_str());
+							color::color_printf(color::FG_DARK_GRAY, "%s.", class_path.c_str());
+							color::color_printf(color::FG_GREEN, "%s\n", method_name.c_str());
+						}
+					}
+				}
+			}
+		}
+
 		void dump_class_methods(const std::string& class_path)
 		{
 			auto found = false;

@@ -18,17 +18,31 @@ void print_todo()
 
 void help_commands()
 {
-	printf("Commands:\n");
+	color::color_printf(color::FG_YELLOW, "Commands:\n");
+
+	printf("\n");
 	color::color_printf(color::FG_LIGHT_GREEN, "entry_points [ep]");
 	printf(" - print list of entry points [LIMITED]\n");
 	color::color_printf(color::FG_LIGHT_GREEN, "entry_points_extended [epe]");
 	printf(" - print all possible entry points\n");
+	
+	printf("\n");
 	color::color_printf(color::FG_LIGHT_GREEN, "classes");
 	printf(" - print all classes from APK file\n");
 	color::color_printf(color::FG_LIGHT_GREEN, "class_info [class] class_path");
 	printf(" - print list of methods from a class\n");
+	color::color_printf(color::FG_LIGHT_GREEN, "find_class _str_");
+	printf(" - find a class which contains _str_ string\n");
+
+	printf("\n");
+	color::color_printf(color::FG_LIGHT_GREEN, "methods [funcs]");
+	printf(" - print all methods from APK file\n");
 	color::color_printf(color::FG_LIGHT_GREEN, "disassemble [dis] method_path");
 	printf(" - disassemble a method\n");
+	color::color_printf(color::FG_LIGHT_GREEN, "find_method [find_func] _str_");
+	printf(" - find a method which contains _str_ string\n");
+
+	printf("\n");
 	color::color_printf(color::FG_LIGHT_GREEN, "manifest");
 	printf(" - print content of AndroidManifest.xml file\n");
 	color::color_printf(color::FG_LIGHT_GREEN, "is_debuggable");
@@ -39,6 +53,7 @@ void help_commands()
 	printf(" - print creation date of the application based on a certificate\n");
 
 	// libs
+	printf("\n");
 	color::color_printf(color::FG_LIGHT_GREEN, "libs");
 	printf(" - print list of native library files\n");
 	color::color_printf(color::FG_LIGHT_GREEN, "dump_libs");
@@ -47,13 +62,14 @@ void help_commands()
 	printf(" - write 'lib_path' file to disk\n");
 	
 	// strings
+	printf("\n");
 	color::color_printf(color::FG_LIGHT_GREEN, "strings [strs]");
 	printf(" - print the strings of APK (thanks to Strings Constant Pool)\n");
-
 	color::color_printf(color::FG_LIGHT_GREEN, "string [str] search_string");
 	printf(" - find \"search_string\" in the strings of APK\n");
 
-	color::color_printf(color::FG_LIGHT_GREEN, "clr");
+	printf("\n");
+	color::color_printf(color::FG_LIGHT_GREEN, "cls [clr]");
 	printf(": Clear screen\n");
 	color::color_printf(color::FG_LIGHT_GREEN, "\nexit/quit\n");
 	printf("\n");
@@ -113,12 +129,22 @@ int main(const int argc, char* argv[])
 
 			if (strlen(editBuffer) > 1 && editBuffer[1] == 'l')
 			{
+				completions.emplace_back("cls");
 				completions.emplace_back("clr");
 			}
+		}
+		else if (editBuffer[0] == 'f')
+		{
+			completions.emplace_back("find_class ");
+			completions.emplace_back("find_method ");
+			completions.emplace_back("find_func ");
+
+			completions.emplace_back("funcs ");
 		}
 		else if (editBuffer[0] == 'm')
 		{
 			completions.emplace_back("manifest");
+			completions.emplace_back("methods");
 		}
 		else if (editBuffer[0] == 'r')
 		{
@@ -204,12 +230,32 @@ int main(const int argc, char* argv[])
 				color::color_printf(color::FG_LIGHT_RED, "Invalid class path\n");
 			}
 		}
-
 		else if (line == "classes")
 		{
 			apk.dump_classes();
 		}
+		else if (utils::starts_with(line, "find_class "))
+		{
+			auto [_, class_part] = utils::split(line, ' ');
+			if (!class_part.empty())
+			{
+				apk.find_dump_class(class_part);
+			}
+		}
 
+		else if (line == "methods" || line == "funcs")
+		{
+			apk.dump_methods();
+		}
+		else if (utils::starts_with(line, "find_method ") || utils::starts_with(line, "find_func "))
+		{
+			auto [_, method_name] = utils::split(line, ' ');
+			if (!method_name.empty())
+			{
+				apk.fin_dump_method(method_name);
+			}
+		}
+		
 		else if (utils::starts_with(line, "dis ") || utils::starts_with(line, "disassemble "))
 		{
 			auto [_, method_path] = utils::split(line, ' ');
@@ -222,6 +268,8 @@ int main(const int argc, char* argv[])
 				color::color_printf(color::FG_LIGHT_RED, "Invalid method path\n");
 			}
 		}
+
+
 		else if (line == "certificate")
 		{
 			apk.dump_certificate();
@@ -276,7 +324,7 @@ int main(const int argc, char* argv[])
 		}
 
 		// clear screen
-		else if (line == "clr")
+		else if (line == "clr" || line == "cls")
 		{
 			utils::clrscr();
 		}

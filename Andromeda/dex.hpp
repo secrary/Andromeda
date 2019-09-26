@@ -19,6 +19,7 @@ namespace andromeda
 		std::shared_ptr<char> dex_content_ = nullptr;
 		std::shared_ptr<dex::Reader> dex_reader_ = nullptr;
 		std::vector<std::string> dex_classes_;
+		std::vector<std::pair<std::string, std::string>> dex_methods_; // class_path, function_name
 		std::vector<std::string> strings_pool; // thanks to Strings Constant Pool
 		std::string dex_name_;
 
@@ -102,6 +103,24 @@ namespace andromeda
 			}
 
 			return dex_classes_;
+		}
+
+		std::vector<std::pair<std::string, std::string>> get_methods()
+		{
+			if (dex_methods_.empty())
+			{
+				dex_reader_->CreateFullIr();
+				auto dex_ir = dex_reader_->GetIr();
+
+				for (auto& current_method : dex_ir->methods)
+				{
+					//printf("%s!%s!%s\n", current_method->parent->Decl().c_str(), current_method->name->c_str(), current_method->prototype->Signature().c_str());
+					dex_methods_.emplace_back(current_method->parent->Decl().c_str(), current_method->name->c_str());
+				}
+
+			}
+
+			return dex_methods_;
 		}
 
 		std::vector<std::string> get_class_methods(const std::string& class_path) const
