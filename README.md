@@ -8,11 +8,14 @@ Compared to other alternatives, it's written in `C/C++` and has a noticeable per
 
 `The tool is in the early development stage`
 
-## Requirements
-- libzip: `sudo apt-get install libz-dev`
-- openssl: `sudo apt-get install libssl-dev`
 
-## Compilation Instructions (VS Code)
+## Building
+### Linux (or Windows Subsystem for Linux)
+#### Requirements
+- clang: `apt install clang`
+- libzip: `apt install libz-dev`
+- openssl: `apt install libssl-dev`
+
 0. Make a `/bin` folder inside the `Andromeda` folder
 1. Open `Andromeda` folder from [Visual Studio Code](https://code.visualstudio.com/) and Navigate to `/Andromeda/Andromeda.cpp`
 2. Run C++ build active file (F1 -> Run Task -> clang++ build active file) (`Ctrl + Shift + B`)
@@ -28,6 +31,4 @@ Lasha Khasaia ([@_qaz_qaz](https://twitter.com/_qaz_qaz))
 I've very limited experience with Android, so if you have time please contribute.
 
 ## TODO
-* Implement new features
-    - Differentiate external and internal libraries
 * Document the tool
