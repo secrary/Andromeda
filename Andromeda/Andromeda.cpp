@@ -68,6 +68,11 @@ void help_commands()
 	color::color_printf(color::FG_LIGHT_GREEN, "string [str] search_string");
 	printf(" - find \"search_string\" in the strings of APK\n");
 
+	// misc
+	printf("\n");
+	color::color_printf(color::FG_LIGHT_GREEN, "language [lang]");
+	printf(" - print a language used to write the application\n");
+
 	printf("\n");
 	color::color_printf(color::FG_LIGHT_GREEN, "cls [clr]");
 	printf(": Clear screen\n");
@@ -165,6 +170,9 @@ int main(const int argc, char* argv[])
 		else if (editBuffer[0] == 'l')
 		{
 			completions.emplace_back("libs");
+			completions.emplace_back("language");
+			completions.emplace_back("lang");
+			
 		}
 
 		else if (editBuffer[0] == 'h')
@@ -321,6 +329,12 @@ int main(const int argc, char* argv[])
 			{
 				apk.search_string(target_string);
 			}
+		}
+
+		// misc
+		else if (line == "language" || line == "lang")
+		{
+			apk.dump_language();
 		}
 
 		// clear screen

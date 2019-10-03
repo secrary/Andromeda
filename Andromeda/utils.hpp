@@ -90,28 +90,32 @@ namespace utils
 		                  });
 	}
 
-	inline std::string unzip_file(const fs::path& file_path, const bool full_unpack = true)
-	{
+	// return unziped path and named in ziped file
+	inline std::pair<std::string, std::vector<std::string>> unzip_file(const fs::path& file_path, const bool full_unpack = true)
+	{	
+		std::string unpacked_path{};
+		std::vector<std::string> file_pathes{};
+
 		mz_zip_archive zip_archive;
 		memset(&zip_archive, 0, sizeof(zip_archive));
 
 		const auto status = mz_zip_reader_init_file(&zip_archive, file_path.string().c_str(), 0);
 		if (!status)
-			return {};
+			return std::make_pair(unpacked_path, file_pathes);
 		const auto file_count = mz_zip_reader_get_num_files(&zip_archive);
 		if (file_count == 0)
 		{
 			mz_zip_reader_end(&zip_archive);
-			return {};
+			return std::make_pair(unpacked_path, file_pathes);
 		}
 		// printf("number_of_files: %zu\n", file_count);
 
-		const auto dest_dir = file_path.parent_path().string() + '/' + file_path.filename().string() + "_unpacked";
-		if (fs::exists(dest_dir))
+		unpacked_path = file_path.parent_path().string() + '/' + file_path.filename().string() + "_unpacked";
+		if (fs::exists(unpacked_path))
 		{
-			fs::remove_all(dest_dir);
+			fs::remove_all(unpacked_path);
 		}
-		fs::create_directory(dest_dir);
+		fs::create_directory(unpacked_path);
 
 		for (auto i = 0; i < file_count; i++)
 		{
@@ -122,7 +126,8 @@ namespace utils
 				continue;
 			}
 			const std::string file_name{file_stat.m_filename};
-			const auto dest_file = dest_dir + '/' + file_name;
+			file_pathes.emplace_back(file_name);
+			const auto dest_file = unpacked_path + '/' + file_name;
 			if (mz_zip_reader_is_file_a_directory(&zip_archive, i))
 			{
 				continue;
@@ -155,7 +160,7 @@ namespace utils
 		}
 
 		mz_zip_reader_end(&zip_archive);
-		return dest_dir;
+		return std::make_pair(unpacked_path, file_pathes);
 	}
 
 	template <typename T>

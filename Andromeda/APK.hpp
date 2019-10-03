@@ -17,6 +17,7 @@ namespace andromeda
 		std::shared_ptr<andromeda::certificate> cert;
 		std::vector<parsed_dex> parsed_dexes{};
 		std::string unzip_path{};
+		std::vector<std::string> file_pathes{};
 
 		explicit apk(const std::string& full_path)
 		{
@@ -25,7 +26,10 @@ namespace andromeda
 
 			if (utils::ends_with(full_path, ".apk"))
 			{
-				unzip_path = utils::unzip_file(full_path, false);
+				const auto unzip_result = utils::unzip_file(full_path, false);
+				this->unzip_path = std::get<0>(unzip_result);
+				this->file_pathes = std::get<1>(unzip_result);
+
 				if (unzip_path.empty())
 				{
 					color_printf(color::FG_RED, "Failed to unpack the file: %s\n",
@@ -356,6 +360,29 @@ namespace andromeda
 			}
 		}
 
+		void dump_language()
+		{
+			std::string lang = "Java";
+			auto print_color = color::FG_LIGHT_RED;
+
+			for (const auto& file_path : this->file_pathes)
+			{
+				if (file_path.find("kotlin/") == 0) // starts_with
+				{
+					lang = "Kotlin";
+					print_color = color::FG_CYAN;
+					break;
+				}
+				else if (file_path.find("assemblies/Xamarin.") == 0)
+				{
+					lang = ".NET (Xamarin)";
+					print_color = color::FG_BLUE;
+					break;
+				}
+			}
+
+			color::color_printf(print_color, "%s\n", lang.c_str());
+		}
 
 		// class apk
 	};
