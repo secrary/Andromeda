@@ -51,6 +51,12 @@ void help_commands()
 	printf(" - print content of root certificate\n");
 	color::color_printf(color::FG_LIGHT_GREEN, "creation_date");
 	printf(" - print creation date of the application based on a certificate\n");
+	
+
+	// permissions
+	printf("\n");
+	color::color_printf(color::FG_LIGHT_GREEN, "permissions [perms]");
+	printf(" - permissions requested by the APK file\n");
 
 	// libs
 	printf("\n");
@@ -174,6 +180,11 @@ int main(const int argc, char* argv[])
 			completions.emplace_back("lang");
 			
 		}
+		else if (editBuffer[0] == 'p')
+		{
+			completions.emplace_back("permissions");
+			completions.emplace_back("perms");
+		}
 
 		else if (editBuffer[0] == 'h')
 		{
@@ -211,6 +222,10 @@ int main(const int argc, char* argv[])
 		else if (line == "manifest")
 		{
 			apk.dump_manifest_file();
+		}
+		else if (line == "permissions" || line == "perms")
+		{
+			apk.dump_permissions();
 		}
 		else if (line == "is_debuggable")
 		{

@@ -285,6 +285,18 @@ namespace andromeda
 			}
 		}
 
+		void dump_permissions() const 
+		{
+			if (!app_manifest->permissions.empty())
+			{
+				color::color_printf(color::FG_DARK_GRAY, "Permissions:\n");
+				for (const auto& perm : app_manifest->permissions)
+				{
+					color::color_printf(color::FG_GREEN, "\t%s\n", perm.c_str());
+				}
+			}
+		}
+
 		void is_debuggable() const
 		{
 			const auto is_debug = app_manifest->is_debuggable();
