@@ -25,7 +25,21 @@ void help_commands()
 	printf(" - print list of entry points [LIMITED]\n");
 	color::color_printf(color::FG_LIGHT_GREEN, "entry_points_extended [epe]");
 	printf(" - print all possible entry points\n");
-	
+
+	// permissions
+	printf("\n");
+	color::color_printf(color::FG_LIGHT_GREEN, "permissions [perms]");
+	printf(" - permissions requested by the APK file\n");	
+	// activities
+	color::color_printf(color::FG_LIGHT_GREEN, "activities");
+	printf(" - Names of activities contained in the APK file\n");
+	// Services
+	color::color_printf(color::FG_LIGHT_GREEN, "services");
+	printf(" - Names of services contained in the APK file\n");
+	// Receivers
+	color::color_printf(color::FG_LIGHT_GREEN, "receivers");
+	printf(" - Names of handlers declared in the APK file for receiving broadcasts\n");
+
 	printf("\n");
 	color::color_printf(color::FG_LIGHT_GREEN, "classes");
 	printf(" - print all classes from APK file\n");
@@ -52,12 +66,6 @@ void help_commands()
 	color::color_printf(color::FG_LIGHT_GREEN, "creation_date");
 	printf(" - print creation date of the application based on a certificate\n");
 	
-
-	// permissions
-	printf("\n");
-	color::color_printf(color::FG_LIGHT_GREEN, "permissions [perms]");
-	printf(" - permissions requested by the APK file\n");
-
 	// libs
 	printf("\n");
 	color::color_printf(color::FG_LIGHT_GREEN, "libs");
@@ -73,6 +81,8 @@ void help_commands()
 	printf(" - print the strings of APK (thanks to Strings Constant Pool)\n");
 	color::color_printf(color::FG_LIGHT_GREEN, "string [str] search_string");
 	printf(" - find \"search_string\" in the strings of APK\n");
+	color::color_printf(color::FG_LIGHT_GREEN, "interesting_strings [???]"); // TODO(lasha): short form
+	printf(" - Interesting/Suspicious strings from the APK file\n");
 
 	// misc
 	printf("\n");
@@ -121,6 +131,10 @@ int main(const int argc, char* argv[])
 			completions.emplace_back("epe");
 			completions.emplace_back("entry_points_extended");
 		}
+		else if (editBuffer[0] == 'a')
+		{
+			completions.emplace_back("activities");
+		}
 		else if (editBuffer[0] == 'd')
 		{
 			completions.emplace_back("dis ");
@@ -160,6 +174,7 @@ int main(const int argc, char* argv[])
 		else if (editBuffer[0] == 'r')
 		{
 			completions.emplace_back("revoke_date");
+			completions.emplace_back("receivers");
 		}
 		else if (editBuffer[0] == 's')
 		{
@@ -168,10 +183,13 @@ int main(const int argc, char* argv[])
 
 			completions.emplace_back("str ");
 			completions.emplace_back("string ");
+
+			completions.emplace_back("services");
 		}
 		else if (editBuffer[0] == 'i')
 		{
 			completions.emplace_back("is_debuggable");
+			completions.emplace_back("interesting_strings");
 		}
 		else if (editBuffer[0] == 'l')
 		{
@@ -218,7 +236,18 @@ int main(const int argc, char* argv[])
 		{
 			help_commands();
 		}
-
+		else if (line == "activities")
+		{
+			apk.dump_activities();
+		}
+		else if (line == "services")
+		{
+			apk.dump_services();
+		}
+		else if (line == "receivers")
+		{
+			apk.dump_receivers();
+		}
 		else if (line == "manifest")
 		{
 			apk.dump_manifest_file();
@@ -337,6 +366,10 @@ int main(const int argc, char* argv[])
 		{
 			apk.dump_strings();
 		}
+		else if (line == "interesting_strings")
+		{
+			apk.dump_interesting_strings();
+		}
 		else if (utils::starts_with(line, "str ") || utils::starts_with(line, "string "))
 		{
 			auto [_, target_string] = utils::split(line, ' ');
@@ -353,7 +386,7 @@ int main(const int argc, char* argv[])
 		}
 
 		// clear screen
-		else if (line == "clr" || line == "cls")
+		else if (line == "clr" || line == "cls" || line == "clear")
 		{
 			utils::clrscr();
 		}

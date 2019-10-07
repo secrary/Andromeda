@@ -172,6 +172,17 @@ namespace utils
 		return data.find(to_search, pos);
 	}
 
+	std::string strip(std::string str)
+	{
+		size_t first = str.find_first_not_of(" \n\r\n");
+		if (std::string::npos == first)
+		{
+			return str;
+		}
+		size_t last = str.find_last_not_of(" \n\r\n");
+		return str.substr(first, (last - first + 1));
+	}
+
 	inline void clrscr()
 	{
 		printf("\033[2J\033[1;1H");

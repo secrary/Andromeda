@@ -5,7 +5,7 @@
 #include "dex.hpp"
 #include "manifest.hpp"
 #include "cert.hpp"
-
+#include "patterns.hpp"
 
 namespace andromeda
 {
@@ -297,6 +297,52 @@ namespace andromeda
 			}
 		}
 
+		
+		void dump_activities() const 
+		{
+			if (!app_manifest->activities.empty())
+			{
+				color::color_printf(color::FG_DARK_GRAY, "Activities:\n");
+				for (const auto& [name, intents]  : app_manifest->activities)
+				{
+					auto full_class_name = name;
+					if (!full_class_name.empty() && full_class_name[0] == '.')
+					{
+						if (!app_manifest->manifest_package.empty())
+						{
+							full_class_name = app_manifest->manifest_package + full_class_name;
+						}
+					}
+
+					color_printf(color::FG_GREEN, "\t%s\n", full_class_name.c_str());
+				}
+			}
+		}
+
+		void dump_services() const
+		{
+			if (!app_manifest->services.empty())
+			{
+				color::color_printf(color::FG_DARK_GRAY, "Services:\n");
+				for (const auto& [name, intents]  : app_manifest->services)
+				{
+					color_printf(color::FG_GREEN, "\t%s\n", name.c_str());
+				}
+			}
+		}
+
+		void dump_receivers() const
+		{
+			if (!app_manifest->receivers.empty())
+			{
+				color::color_printf(color::FG_DARK_GRAY, "Receivers:\n");
+				for (const auto& [name, intents]  : app_manifest->receivers)
+				{
+					color_printf(color::FG_GREEN, "\t%s\n", name.c_str());
+				}
+			}
+		}
+
 		void is_debuggable() const
 		{
 			const auto is_debug = app_manifest->is_debuggable();
@@ -350,6 +396,40 @@ namespace andromeda
 					}
 				}
 			}
+		}
+
+		void dump_interesting_strings()
+		{
+			std::vector<std::string> urls{};
+
+			for (auto parsed_dex : parsed_dexes)
+			{
+				const auto dex_strings = parsed_dex.get_strings();
+				if (!dex_strings.empty())
+				{
+					for (const auto& str : dex_strings)
+					{
+						if (is_url(str))
+						{
+							urls.emplace_back(str);
+						}
+					}
+				}
+			}
+
+			// print interesting strings
+			// TODO(lasha): add more
+
+			// URLs:
+			if (!urls.empty())
+			{
+				color::color_printf(color::FG_DARK_GRAY, "URLs:\n");
+				for (const auto& url : urls)
+				{
+					color::color_printf(color::FG_GREEN, "\t%s\n", url.c_str());
+				}
+			}
+
 		}
 
 		void search_string(std::string& target_string)

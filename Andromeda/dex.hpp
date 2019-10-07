@@ -77,9 +77,10 @@ namespace andromeda
 				auto ir = dex_reader_->GetIr();
 				for (const auto& s : ir->strings)
 				{
-					const auto current_string = std::string { s->c_str() };
+					auto current_string = std::string { s->c_str() };
 					if (!current_string.empty())
 					{
+						current_string = utils::strip(current_string);
 						strings_pool.emplace_back(current_string);
 					}
 				}
