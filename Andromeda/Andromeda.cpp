@@ -74,6 +74,8 @@ void help_commands()
 	printf(" - write all lib files to disk\n");
 	color::color_printf(color::FG_LIGHT_GREEN, "dump_lib lib_path");
 	printf(" - write 'lib_path' file to disk\n");
+	color::color_printf(color::FG_LIGHT_GREEN, "libs_hash [libh]");
+	printf(" - SHA-1 hashes of lib files\n");
 	
 	// strings
 	printf("\n");
@@ -194,6 +196,9 @@ int main(const int argc, char* argv[])
 		else if (editBuffer[0] == 'l')
 		{
 			completions.emplace_back("libs");
+			completions.emplace_back("libs_hash");
+			completions.emplace_back("libh");
+			
 			completions.emplace_back("language");
 			completions.emplace_back("lang");
 			
@@ -360,6 +365,11 @@ int main(const int argc, char* argv[])
 				apk.get_libs(full_path, true, lib_path);
 			}
 		}
+		else if (line == "libs_hash" || line == "libh")
+		{
+			apk.get_libs(full_path, true, "", true);
+		}
+		
 
 		// strings
 		else if (line == "strings" || line == "strs")

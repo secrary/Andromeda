@@ -7,6 +7,8 @@
 #include "cert.hpp"
 #include "patterns.hpp"
 
+#include "digestpp/digestpp.hpp"
+
 namespace andromeda
 {
 	class apk
@@ -87,8 +89,13 @@ namespace andromeda
 		apk(const apk&) = default;
 		apk& operator=(const apk&) = default;
 
-		std::vector<std::string> get_libs(const fs::path& file_path, const bool extract = false, const std::string& target_lib_path = "")
+		std::vector<std::string> get_libs(const fs::path& file_path, bool extract = false, const std::string& target_lib_path = "", const bool get_hash = false)
 		{
+			if (get_hash == true)
+			{
+				extract = true;
+			}
+
 			std::vector<std::string> libs{};
 
 			mz_zip_archive zip_archive;
@@ -108,6 +115,7 @@ namespace andromeda
 
 			const auto dest_dir = fs::current_path().string() + '/' + "libs";
 
+			const auto current_path = fs::current_path().string();
 			for (auto i = 0; i < file_count; i++)
 			{
 				mz_zip_archive_file_stat file_stat;
@@ -157,7 +165,17 @@ namespace andromeda
 					}
 					else
 					{
-						color::color_printf(color::FG_GREEN, "unpacked lib: %s\n", dest_file.c_str());
+						if (get_hash == true)
+						{
+							const auto file_content = utils::read_file_content(dest_file);
+							const auto file_sha1_ascii = digestpp::sha1().absorb(file_content).hexdigest();
+							color::color_printf(color::FG_GREEN, "%s: ", file_name.c_str());
+							color::color_printf(color::FG_DARK_GRAY, "%s\n", file_sha1_ascii.c_str());
+						}
+						else
+						{
+							color::color_printf(color::FG_GREEN, "unpacked lib: %s\n", dest_file.c_str());
+						}
 					}
 				}
 

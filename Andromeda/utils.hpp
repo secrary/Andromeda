@@ -3,6 +3,8 @@
 #include <memory>
 #include <vector>
 #include <string>
+#include <sstream>
+#include <fstream>
 #include <algorithm>
 #include <experimental/filesystem>
 namespace fs = std::experimental::filesystem;
@@ -172,7 +174,7 @@ namespace utils
 		return data.find(to_search, pos);
 	}
 
-	std::string strip(std::string str)
+	inline std::string strip(std::string str)
 	{
 		size_t first = str.find_first_not_of(" \n\r\n");
 		if (std::string::npos == first)
@@ -181,6 +183,16 @@ namespace utils
 		}
 		size_t last = str.find_last_not_of(" \n\r\n");
 		return str.substr(first, (last - first + 1));
+	}
+
+	inline std::string read_file_content(const std::string& file_path)
+	{
+		std::ifstream file_stream(file_path, std::ios::binary);
+		std::string file_content((std::istreambuf_iterator<char>(file_stream)),
+		                         std::istreambuf_iterator<char>());
+		file_stream.close();
+
+		return file_content;
 	}
 
 	inline void clrscr()
