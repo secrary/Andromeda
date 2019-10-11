@@ -5,6 +5,7 @@
 #include <string>
 #include <sstream>
 #include <fstream>
+#include <iterator>
 #include <algorithm>
 #include <experimental/filesystem>
 namespace fs = std::experimental::filesystem;
@@ -16,6 +17,14 @@ namespace fs = std::experimental::filesystem;
 
 namespace utils
 {
+	void split(const std::string& str, std::vector<std::string>& cont)
+	{
+		std::istringstream iss{str};
+		std::copy(std::istream_iterator<std::string>(iss),
+				std::istream_iterator<std::string>(),
+				std::back_inserter(cont));
+	}
+
 	inline std::shared_ptr<char> read_file(const std::string& file_path, size_t& file_size)
 	{
 		const auto in_file = fopen(file_path.c_str(), "rb");

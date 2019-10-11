@@ -419,6 +419,7 @@ namespace andromeda
 		void dump_interesting_strings()
 		{
 			std::vector<std::string> urls{};
+			std::vector<std::string> emails{};
 
 			for (auto parsed_dex : parsed_dexes)
 			{
@@ -431,12 +432,14 @@ namespace andromeda
 						{
 							urls.emplace_back(str);
 						}
+						
+						if(is_email(str))
+						{
+							emails.emplace_back(str);
+						}
 					}
 				}
 			}
-
-			// print interesting strings
-			// TODO(lasha): add more
 
 			// URLs:
 			if (!urls.empty())
@@ -445,6 +448,16 @@ namespace andromeda
 				for (const auto& url : urls)
 				{
 					color::color_printf(color::FG_GREEN, "\t%s\n", url.c_str());
+				}
+			}
+
+			// emails
+			if (!emails.empty())
+			{
+				color::color_printf(color::FG_DARK_GRAY, "e-Mails:\n");
+				for (const auto& email : emails)
+				{
+					color::color_printf(color::FG_GREEN, "\t%s\n", email.c_str());
 				}
 			}
 

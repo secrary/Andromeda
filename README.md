@@ -22,7 +22,8 @@ Compared to other alternatives, it's written in `C/C++` and has a noticeable per
 
 
 ## Commands
-![commands](https://user-images.githubusercontent.com/16405698/65551555-eaa7d980-df2a-11e9-99a1-d7f51fd12af4.png)
+![commands](https://user-images.githubusercontent.com/16405698/66689195-9aeb4100-ec92-11e9-9924-ce9a01f7551e.png)
+
 
 ## Author
 Lasha Khasaia ([@_qaz_qaz](https://twitter.com/_qaz_qaz))
