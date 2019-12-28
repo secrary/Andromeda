@@ -128,7 +128,7 @@ namespace andromeda
 			xml_doc.load_file(xml_path.c_str());
 
 			auto is_debug_string = std::string{
-				xml_doc.child("manifest").child("application").attribute("android::debuggable").as_string()
+				xml_doc.child("manifest").child("application").attribute("android:debuggable").as_string()
 			};
 			if (!is_debug_string.empty() && is_debug_string == "true")
 			{
