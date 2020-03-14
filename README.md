@@ -10,16 +10,13 @@ Compared to other alternatives, it's written in `C/C++` and has a noticeable per
 
 
 ## Building
-### Linux (or Windows Subsystem for Linux)
 #### Requirements
 - clang: `apt install clang`
 - libzip: `apt install libz-dev`
 - openssl: `apt install libssl-dev`
 
-0. Make a `/bin` folder inside the `Andromeda` folder
-1. Open `Andromeda` folder from [Visual Studio Code](https://code.visualstudio.com/) and Navigate to `/Andromeda/Andromeda.cpp`
-2. Run C++ build active file (F1 -> Run Task -> clang++ build active file) (`Ctrl + Shift + B`)
-
+* `make`
+* `./bin/andromeda android_app.apk`
 
 ## Commands
 ![commands](https://user-images.githubusercontent.com/16405698/66689195-9aeb4100-ec92-11e9-9924-ce9a01f7551e.png)
